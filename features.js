@@ -219,6 +219,9 @@ function saveCustomHistory(totalKcal) {
     localStorage.setItem("breakfastHistory", JSON.stringify(history));
 
     alert(L.recorded_tip);
+
+    showHistory(true);   // ★ 新增：保存后立即刷新历史记录（静默）
+
 }
 
 function resetCustom() {
