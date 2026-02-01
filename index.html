@@ -69,21 +69,23 @@
 
     <!-- 语言菜单 -->
     <div id="langMenu">
-    <div class="lang-title">Language</div>
-    <div class="lang-divider"></div>
+        <div class="lang-title">Language</div>
+        <div class="lang-divider"></div>
 
-    <div class="lang-item" onclick="setLang('zh-CN')">🇨🇳 简体中文</div>
-    <div class="lang-item" onclick="setLang('zh-HK')">🇭🇰 繁體中文</div>
-    <div class="lang-item" onclick="setLang('en')">🇺🇸 English</div>
-</div>
+        <div class="lang-item" onclick="setLang('zh-CN')">🇨🇳 简体中文</div>
+        <div class="lang-item" onclick="setLang('zh-HK')">🇭🇰 繁體中文</div>
+        <div class="lang-item" onclick="setLang('en')">🇺🇸 English</div>
+    </div>
 
-
-    <!-- 顺序很重要 -->
+    <!-- 脚本顺序非常重要 -->
     <script src="lang.js"></script>
     <script src="materials.js"></script>
-    <script src="app.js"></script>
-    
-<div class="footer-credit">— Designed by BY —</div>
+
+    <script src="core.js"></script>
+    <script src="ui.js"></script>
+    <script src="features.js"></script>
+
+    <div class="footer-credit">— Designed by BY —</div>
 
 </body>
 </html>
