@@ -73,9 +73,9 @@ function renderRecommendedMaterials() {
    4. 语言切换时刷新 UI（与 features.js 完美配套）
 ============================================================ */
 onLangChange((L) => {
-    applyLang(L);              // 更新所有 UI 文案
-    renderRecommendedMaterials(); // 更新推荐材料
-    renderSelected();          // 更新自主选择材料
+    applyLang(L);
+    renderRecommendedMaterials();
+    renderSelected();
     refreshSmartArea();
-    showHistory();         // ★ 结构化智能推荐即时翻译
+    showHistory(true);   // ★ 静默刷新历史记录
 });
