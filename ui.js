@@ -1,6 +1,10 @@
-/* ui.js — UI 文案更新 + 模式切换 + 推荐材料 */
+/* ============================================================
+   ui.js — UI 文案更新 + 模式切换 + 推荐材料（最终版）
+============================================================ */
 
-/* 1. UI 文案更新 */
+/* ============================================================
+   1. UI 文案更新（语言切换时调用）
+============================================================ */
 function applyLang(L) {
     document.getElementById("title").textContent = L.title;
     document.getElementById("subtitle").textContent = L.subtitle;
@@ -25,7 +29,9 @@ function applyLang(L) {
     document.getElementById("materialSearch").placeholder = L.placeholder_search;
 }
 
-/* 2. 模式切换 */
+/* ============================================================
+   2. 模式切换（智能推荐 / 自主选择）
+============================================================ */
 const modeSelect = document.getElementById("modeSelect");
 const smartArea = document.getElementById("smartArea");
 const customArea = document.getElementById("customArea");
@@ -41,7 +47,9 @@ modeSelect.onchange = () => {
     }
 };
 
-/* 3. 推荐材料 */
+/* ============================================================
+   3. 推荐材料（自主选择模式）
+============================================================ */
 const RECOMMENDED_MATERIALS = [
     "egg", "toast", "milk",
     "oatmeal", "fruit", "yogurt",
@@ -61,10 +69,13 @@ function renderRecommendedMaterials() {
     `).join("");
 }
 
-/* 4. 语言切换时刷新 UI */
+/* ============================================================
+   4. 语言切换时刷新 UI（与 features.js 完美配套）
+============================================================ */
 onLangChange((L) => {
-    applyLang(L);
-    renderRecommendedMaterials();
-    renderSelected();
+    applyLang(L);              // 更新所有 UI 文案
+    renderRecommendedMaterials(); // 更新推荐材料
+    renderSelected();          // 更新自主选择材料
     refreshSmartArea();
+    showHistory();         // ★ 结构化智能推荐即时翻译
 });
