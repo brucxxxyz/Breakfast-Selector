@@ -23,30 +23,44 @@ darkBtn.onclick = () => {
     }, 150);
 };
 
-/* 3. 语言菜单按钮 */
+/* ============================================================
+   3. 语言菜单按钮（升级版：支持点击外部关闭）
+============================================================ */
 const langBtn = document.getElementById("langBtn");
 const langMenu = document.getElementById("langMenu");
 
-langBtn.onclick = () => {
+langBtn.onclick = (e) => {
+    e.stopPropagation(); // ★ 防止触发外部点击关闭
+
     if (langMenu.style.display === "block") {
-        langMenu.style.opacity = 0;
-        setTimeout(() => langMenu.style.display = "none", 200);
+        closeLangMenu();
     } else {
-        langMenu.style.display = "block";
-        setTimeout(() => langMenu.style.opacity = 1, 10);
+        openLangMenu();
     }
 };
 
-/* 4. setLang 外部接口（保存语言 + 切换语言） */
-function setLang(lang) {
-    localStorage.setItem("appLang", lang);   // ★ 保存语言
-    setLangInternal(lang);
+function openLangMenu() {
+    langMenu.style.display = "block";
+    setTimeout(() => langMenu.style.opacity = 1, 10);
+}
 
+function closeLangMenu() {
     langMenu.style.opacity = 0;
     setTimeout(() => langMenu.style.display = "none", 200);
 }
 
-/* 5. 页面加载时恢复语言 */
+/* ============================================================
+   4. setLang 外部接口（保存语言 + 切换语言 + 自动收起）
+============================================================ */
+function setLang(lang) {
+    localStorage.setItem("appLang", lang);   // ★ 保存语言
+    setLangInternal(lang);                   // ★ 切换语言
+    closeLangMenu();                         // ★ 选择语言后自动收起
+}
+
+/* ============================================================
+   5. 页面加载时恢复语言
+============================================================ */
 window.addEventListener("load", () => {
     const saved = localStorage.getItem("appLang");
     if (saved) {
@@ -55,20 +69,18 @@ window.addEventListener("load", () => {
 });
 
 /* ============================================================
-   点击页面其他地方时关闭语言菜单
+   6. 点击页面其他地方时关闭语言菜单（最终版）
 ============================================================ */
 document.addEventListener("click", (e) => {
-    // 如果菜单本来就是隐藏的 → 不处理
+    // 菜单没打开 → 不处理
     if (langMenu.style.display !== "block") return;
 
-    // 如果点击的是语言按钮 → 不关闭
+    // 点击语言按钮 → 不关闭（已在按钮逻辑处理）
     if (langBtn.contains(e.target)) return;
 
-    // 如果点击的是菜单内部 → 不关闭
+    // 点击菜单内部（语言选项） → 不关闭（setLang 会关闭）
     if (langMenu.contains(e.target)) return;
 
-    // 其他情况 → 收起菜单
-    langMenu.style.opacity = 0;
-    setTimeout(() => langMenu.style.display = "none", 200);
+    // 其他任何地方 → 关闭
+    closeLangMenu();
 });
-
