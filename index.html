@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日早餐</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- 顶部右上角按钮 -->
+    <div class="top-right">
+        <button id="langBtn" class="icon-btn">🌐</button>
+        <button id="darkBtn" class="icon-btn">🌙</button>
+    </div>
+
+    <div class="container">
+
+        <!-- 标题 -->
+        <h1 id="title">🍳 今日早餐</h1>
+        <div id="subtitle" class="subtitle">为你生成简单、均衡的早餐组合</div>
+
+        <!-- 姓名 -->
+        <label id="label-name">你的大名</label>
+        <input id="name" type="text" placeholder="请输入你的名字">
+
+        <!-- 日期 -->
+        <label id="label-date">日期</label>
+        <input id="date" type="date">
+
+        <!-- 模式选择 -->
+        <label id="label-mode">选择模式</label>
+        <select id="modeSelect">
+            <option value="smart">智能推荐</option>
+            <option value="custom">自主选择</option>
+        </select>
+
+        <!-- 智能推荐区域 -->
+        <div id="smartArea">
+            <button id="generateBtn">推荐早餐</button>
+            <div id="options"></div>
+            <div id="final"></div>
+        </div>
+
+        <!-- 自主选择区域 -->
+        <div id="customArea" style="display:none;">
+            <div id="custom-title" class="subtitle">选择你今天想吃的材料</div>
+
+            <label id="label-search">搜索材料</label>
+            <input id="materialSearch" placeholder="搜索材料">
+            <div id="searchResults"></div>
+
+            <div id="selected-title" class="subtitle">已选择材料</div>
+            <div id="selectedMaterials"></div>
+
+            <button id="generateCustomBtn">生成自主早餐</button>
+            <div id="customResult"></div>
+        </div>
+
+        <!-- 历史记录按钮 -->
+        <button id="historyBtn" class="secondary">查看历史</button>
+        <button id="clearHistoryBtn" class="danger">清除历史</button>
+
+        <!-- 历史记录显示 -->
+        <div id="historyBox"></div>
+
+    </div>
+
+    <!-- 语言菜单 -->
+    <div id="langMenu">
+    <div class="lang-title">Language</div>
+    <div class="lang-divider"></div>
+
+    <div class="lang-item" onclick="setLang('zh-CN')">🇨🇳 简体中文</div>
+    <div class="lang-item" onclick="setLang('zh-HK')">🇭🇰 繁體中文</div>
+    <div class="lang-item" onclick="setLang('en')">🇺🇸 English</div>
+</div>
+
+
+    <!-- 顺序很重要 -->
+    <script src="lang.js"></script>
+    <script src="materials.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
