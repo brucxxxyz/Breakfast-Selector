@@ -53,3 +53,22 @@ window.addEventListener("load", () => {
         setLangInternal(saved);   // ★ 不打开菜单
     }
 });
+
+/* ============================================================
+   点击页面其他地方时关闭语言菜单
+============================================================ */
+document.addEventListener("click", (e) => {
+    // 如果菜单本来就是隐藏的 → 不处理
+    if (langMenu.style.display !== "block") return;
+
+    // 如果点击的是语言按钮 → 不关闭
+    if (langBtn.contains(e.target)) return;
+
+    // 如果点击的是菜单内部 → 不关闭
+    if (langMenu.contains(e.target)) return;
+
+    // 其他情况 → 收起菜单
+    langMenu.style.opacity = 0;
+    setTimeout(() => langMenu.style.display = "none", 200);
+});
+
