@@ -1,10 +1,28 @@
-/* features.js — 智能推荐 + 自主选择 + 历史记录 */
+/* ============================================================
+   features.js — 智能推荐 + 自主选择 + 历史记录（结构化 + 完整翻译版）
+============================================================ */
 
 /* ============================================================
-   8. 智能推荐（一次提供 3 组）
+   工具函数：从智能推荐文本中提取材料 ID（结构化）
+============================================================ */
+function extractMaterialIds(text, lang) {
+    const ids = [];
+
+    MATERIALS.forEach(m => {
+        if (text.includes(m.name[lang]) || text.includes(m.emoji)) {
+            ids.push(m.id);
+        }
+    });
+
+    return ids;
+}
+
+/* ============================================================
+   8. 智能推荐（结构化 + 即时翻译）
 ============================================================ */
 function generate(isUserClick = true) {
     const L = getLangPack();
+    const lang = getLang();
     const final = document.getElementById("final");
 
     if (isUserClick) {
@@ -14,35 +32,30 @@ function generate(isUserClick = true) {
             const combos = [];
 
             for (let i = 0; i < 3; i++) {
-                const item = L.smart_items[Math.floor(Math.random() * L.smart_items.length)];
+                const itemText = L.smart_items[Math.floor(Math.random() * L.smart_items.length)];
                 const kcal = Math.floor(250 + Math.random() * 200);
 
-                combos.push({ text: item, kcal });
+                // ★ 结构化提取材料 ID
+                const items = extractMaterialIds(itemText, lang);
+
+                combos.push({
+                    text: itemText,
+                    kcal,
+                    items   // ★ 新增结构化字段
+                });
             }
 
-            final.innerHTML = combos.map((c, idx) => `
-                <div class="card" id="smart_${idx}">
-                    <div>${c.text}</div>
-                    <div class="nutrition">${L.smart_kcal_prefix}${c.kcal} kcal</div>
-                    <button class="secondary" onclick="chooseSmart(${idx})">${L.choose_this}</button>
-                </div>
-            `).join("");
-
             window.smartChoices = combos;
+            refreshSmartArea(); // ★ 用结构化翻译渲染
         }, 600);
     } else {
-        if (!window.smartChoices) return;
-
-        final.innerHTML = window.smartChoices.map((c, idx) => `
-            <div class="card" id="smart_${idx}">
-                <div>${c.text}</div>
-                <div class="nutrition">${L.smart_kcal_prefix}${c.kcal} kcal</div>
-                <button class="secondary" onclick="chooseSmart(${idx})">${L.choose_this}</button>
-            </div>
-        `).join("");
+        refreshSmartArea();
     }
 }
 
+/* ============================================================
+   智能推荐：选择某一项
+============================================================ */
 function chooseSmart(index) {
     const L = getLangPack();
     const chosen = smartChoices[index];
@@ -57,8 +70,8 @@ function chooseSmart(index) {
 
     history.push({
         date,
-        items: [],
-        text: chosen.text,
+        items: chosen.items,   // ★ 保存结构化材料
+        text: chosen.text,     // 兼容旧数据
         kcal: chosen.kcal
     });
 
@@ -73,11 +86,30 @@ function chooseSmart(index) {
     alert(L.recorded_tip);
 }
 
+/* ============================================================
+   智能推荐：即时翻译（结构化）
+============================================================ */
 function refreshSmartArea() {
     const final = document.getElementById("final");
     const L = getLangPack();
+    const lang = getLang();
 
     if (!window.smartChoices) return;
+
+    // ★ 根据 items 重建 text（真正的结构化翻译）
+    window.smartChoices = window.smartChoices.map(c => {
+        const translatedText = c.items
+            .map(id => {
+                const m = getMaterialById(id);
+                return `${m.emoji} ${m.name[lang]}`;
+            })
+            .join(" + ");
+
+        return {
+            ...c,
+            text: translatedText
+        };
+    });
 
     final.innerHTML = window.smartChoices.map((c, idx) => `
         <div class="card" id="smart_${idx}">
@@ -180,7 +212,7 @@ function saveCustomHistory(totalKcal) {
 
     history.push({
         date,
-        items: [...selectedMaterials],
+        items: [...selectedMaterials], // ★ 结构化保存
         kcal: totalKcal
     });
 
@@ -196,7 +228,7 @@ function resetCustom() {
 }
 
 /* ============================================================
-   10. 历史记录（月份折叠 + 日期倒序 + 即时翻译）
+   10. 历史记录（结构化 + 完整翻译）
 ============================================================ */
 function showHistory() {
     const L = getLangPack();
@@ -265,6 +297,7 @@ function showHistory() {
             let content = "";
 
             if (h.items && h.items.length > 0) {
+                // ★ 结构化翻译（智能推荐 + 自主选择都支持）
                 const translated = h.items
                     .map(id => {
                         const m = getMaterialById(id);
@@ -272,9 +305,10 @@ function showHistory() {
                     })
                     .join(" + ");
 
-                content = `${translated}`;
+                content = translated;
             } else {
-                content = `${h.text}`;
+                // ★ 兼容旧数据
+                content = h.text;
             }
 
             detail.innerHTML = `
