@@ -2,30 +2,20 @@
    core.js — 全局基础逻辑（最终版）
 ============================================================ */
 
-/* ============================================================
-   1. 默认日期（NZ 时区）
-============================================================ */
+/* 1. 默认日期（NZ 时区） */
 window.addEventListener("load", () => {
     const dateInput = document.getElementById("date");
-
-    // 如果用户已经手动选择过日期，不覆盖
-    if (dateInput.value) return;
-
-    // NZ 时区日期
-    const nz = new Date();
-    nz.setMinutes(nz.getMinutes() - nz.getTimezoneOffset());
-    dateInput.value = nz.toISOString().slice(0, 10);
+    if (!dateInput.value) {
+        const nz = new Date();
+        nz.setMinutes(nz.getMinutes() - nz.getTimezoneOffset());
+        dateInput.value = nz.toISOString().slice(0, 10);
+    }
 });
 
-/* ============================================================
-   2. 暗夜模式按钮（带淡入动画）
-============================================================ */
+/* 2. 暗夜模式按钮 */
 const darkBtn = document.getElementById("darkBtn");
-
 darkBtn.onclick = () => {
     document.body.classList.toggle("dark");
-
-    // 按钮淡出 → 切换图标 → 淡入
     darkBtn.style.opacity = 0;
     setTimeout(() => {
         darkBtn.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
@@ -33,9 +23,7 @@ darkBtn.onclick = () => {
     }, 150);
 };
 
-/* ============================================================
-   3. 语言菜单按钮（带淡入淡出）
-============================================================ */
+/* 3. 语言菜单按钮 */
 const langBtn = document.getElementById("langBtn");
 const langMenu = document.getElementById("langMenu");
 
@@ -49,13 +37,19 @@ langBtn.onclick = () => {
     }
 };
 
-/* ============================================================
-   4. setLang 外部接口（调用 lang.js 的 setLangInternal）
-============================================================ */
+/* 4. setLang 外部接口（保存语言 + 切换语言） */
 function setLang(lang) {
+    localStorage.setItem("appLang", lang);   // ★ 保存语言
     setLangInternal(lang);
 
-    // 关闭语言菜单
     langMenu.style.opacity = 0;
     setTimeout(() => langMenu.style.display = "none", 200);
 }
+
+/* 5. 页面加载时恢复语言 */
+window.addEventListener("load", () => {
+    const saved = localStorage.getItem("appLang");
+    if (saved) {
+        setLangInternal(saved);   // ★ 不打开菜单
+    }
+});
