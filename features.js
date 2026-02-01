@@ -230,7 +230,7 @@ function resetCustom() {
 /* ============================================================
    10. 历史记录（结构化 + 完整翻译）
 ============================================================ */
-function showHistory() {
+function showHistory(silent = false) {
     const L = getLangPack();
     const lang = getLang();
     const box = document.getElementById("historyBox");
@@ -238,11 +238,12 @@ function showHistory() {
     const history = JSON.parse(localStorage.getItem("breakfastHistory") || "[]");
 
     if (history.length === 0) {
-        alert(L.no_history);
-        box.innerHTML = "";
+        if (!silent) alert(L.no_history);   // ★ 静默模式不弹窗
+        if (!silent) box.innerHTML = "";    // ★ 静默模式不清空
         return;
     }
 
+    // ★ 有历史记录 → 正常渲染
     const groups = {};
     history.forEach(h => {
         const month = h.date.slice(0, 7);
@@ -297,7 +298,6 @@ function showHistory() {
             let content = "";
 
             if (h.items && h.items.length > 0) {
-                // ★ 结构化翻译（智能推荐 + 自主选择都支持）
                 const translated = h.items
                     .map(id => {
                         const m = getMaterialById(id);
@@ -307,7 +307,6 @@ function showHistory() {
 
                 content = translated;
             } else {
-                // ★ 兼容旧数据
                 content = h.text;
             }
 
