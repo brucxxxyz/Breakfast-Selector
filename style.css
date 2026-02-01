@@ -263,3 +263,13 @@ button:active {
     font-size: 14px;
     opacity: 0.8;
 }
+
+.footer-credit {
+    text-align: center;
+    color: #b0b0b0;        /* 淡灰色 */
+    font-size: 13px;
+    margin-top: 40px;      /* 与内容保持距离 */
+    margin-bottom: 20px;   /* 底部留白 */
+    user-select: none;     /* 不可选中，更像系统 UI */
+}
+
